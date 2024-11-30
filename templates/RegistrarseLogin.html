@@ -3,118 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e0f7fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-            position: relative;
-        }
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .form-group button {
-            width: 100%;
-            padding: 10px;
-            background-color: #00bcd4;
-            border: none;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .form-group button:hover {
-            background-color: #0097a7;
-        }
-        .form-footer {
-            text-align: center;
-            margin-top: 15px;
-        }
-        .form-footer a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .form-footer a:hover {
-            text-decoration: underline;
-        }
-        .error-message {
-            color: red;
-            font-size: 12px;
-            display: none;
-        }
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            top: 38px;
-            cursor: pointer;
-        }
-    </style>
+    <title>Registrarse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles_registrarse.css') }}">
+
+   
+    
 </head>
-<body>
-    <div class="container">
-        <h2>Registro</h2>
-        <form id="registrationForm" action="/RegistrarseLogin" method="POST">
-            <div class="form-group">
-                <label for="username">Correo:</label>
-                <input type="email" id="username" name="username" required>
-                <span class="error-message" id="emailError">El correo debe ser @gmail.com</span>
+<body class="fade-in"> <!-- Añadido fade-in aquí -->
+    <div class="login-container" id="registration-container">
+        <div class="login-box">
+            <div class="login-left">
+                <h2>Registrarse</h2>
+                <form id="registrationForm" action="/RegistrarseLogin" method="POST">
+                    <div class="form-group">
+                        <label for="username">Correo:</label>
+                        <input type="email" id="username" name="username" required>
+                        <span class="error-message" id="emailError">El correo debe ser @gmail.com</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña:</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" name="password" required>
+                            <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+                        </div>
+                        <span class="error-message" id="passwordError">La contraseña debe tener al menos 8 caracteres y no puede ser "12345678".</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmar Contraseña:</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            <span class="toggle-password" onclick="togglePassword('confirmPassword')">👁️</span>
+                        </div>
+                        <span class="error-message" id="confirmPasswordError">Las contraseñas no coinciden.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="NombreCompleto">Nombre Completo:</label>
+                        <input type="text" id="NombreCompleto" name="NombreCompleto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="NumeroTelefono">Número de Teléfono:</label>
+                        <input type="text" id="NumeroTelefono" name="NumeroTelefono" required>
+                        <span class="error-message" id="phoneError">El número de teléfono debe contener exactamente 8 dígitos numéricos y no contener letras.</span>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">Registrarse</button>
+                    </div>
+                </form>
+                <div class="form-footer">
+                    <p>¿Ya tienes cuenta? <a href="javascript:void(0)" onclick="triggerLoginTransition()">Inicia sesión aquí</a></p>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" required>
-                <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
-                <span class="error-message" id="passwordError">La contraseña debe tener al menos 8 caracteres y no puede ser "12345678".</span>
+            <div class="login-right">
+                <div class="image-frame">
+                    <img src="/EllenImagen/Logo.png" alt="Registro Image" class="logo-image">
+                </div>
+                <p>Únete a nuestra comunidad y empieza a disfrutar de los beneficios.</p>
             </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirmar Contraseña:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required>
-                <span class="toggle-password" onclick="togglePassword('confirmPassword')">👁️</span>
-                <span class="error-message" id="confirmPasswordError">Las contraseñas no coinciden.</span>
-            </div>
-            <div class="form-group">
-                <label for="NombreCompleto">Nombre Completo:</label>
-                <input type="text" id="NombreCompleto" name="NombreCompleto" required>
-            </div>
-            <div class="form-group">
-                <label for="NumeroTelefono">Número de Teléfono:</label>
-                <input type="text" id="NumeroTelefono" name="NumeroTelefono" required>
-                <span class="error-message" id="phoneError">El número de teléfono debe contener exactamente 8 dígitos numéricos y no contener letras.</span>
-            </div>
-            <div class="form-group">
-                <button type="submit">Registrarse</button>
-            </div>
-        </form>
-        <div class="form-footer">
-            <p>¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a></p>
         </div>
     </div>
 
@@ -164,7 +108,7 @@
                 phoneError.style.display = 'none';
             }
         });
-
+        
         document.getElementById('NumeroTelefono').addEventListener('input', function() {
             const phoneField = document.getElementById('NumeroTelefono');
             const phoneValue = phoneField.value;
@@ -189,6 +133,19 @@
             } else {
                 field.type = 'password';
             }
+        }
+
+        function triggerLoginTransition() {
+            const registrationContainer = document.getElementById('registration-container');
+
+            // Añadir clase fade-out
+            registrationContainer.classList.remove('fade-in');
+            registrationContainer.classList.add('fade-out');
+
+            // Redirigir a la página de login después de la animación
+            setTimeout(() => {
+                window.location.href = '/login'; // Redirigir a login
+            }, 1000); // Tiempo de espera igual al de la animación
         }
     </script>
 </body>

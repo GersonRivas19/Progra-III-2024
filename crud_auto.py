@@ -5,12 +5,13 @@ db = crud_proyectofinal.crud()
 class crud_auto:
     def __init__(self):
         self.db = crud_proyectofinal.crud()  # Inicializa self.db como una instancia de la clase crud
+
     
-    # CRUD para los usuarios:
     def consultar(self):
         return self.db.consultar("SELECT * FROM users")
     
     def InsertarUsuario(self, datos):
+        
         try:
             sql = """
                 INSERT INTO users (username, password, NombreCompleto, NumeroTelefono)
@@ -30,6 +31,8 @@ class crud_auto:
         valores = (user_id,)
         resultados = self.db.consultar(sql, valores)
         return resultados[0] if resultados else None  # Devuelve el primer resultado o None
+    
+   
 
     def actualizar_usuario(self, user_id, username, telefono, imgPerfilUsuario=None, imgFondoUsuario=None):
         sql = "UPDATE users SET username = %s, NumeroTelefono = %s"
@@ -49,13 +52,18 @@ class crud_auto:
         return self.db.procesar_consultas(sql, valores)
     
     # CRUD para las publicaciones:
-    def consultar_publicacion(self):
-        return self.db.consultar("SELECT * FROM publicacion_vehiculos")
+    def mostrar_publicacion_perfil(self, user_id):
+        sql = """
+        SELECT Id_Publicacion, imgVehiculo, nombre_vehiculo, precio, user_id FROM publicacion_vehiculos
+        WHERE user_id = %s
+        """
+        return self.db.consultar(sql, (user_id,))
+        
 
     def insertar_vehiculo(self, datos):
         sql = """
-            INSERT INTO publicacion_vehiculos (nombre_vehiculo, precio, descripcion, imgVehiculo, imgVehiculo2, latitud, longitud, maps_url, map_image, user_id)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO publicacion_vehiculos (nombre_vehiculo, precio, descripcion, imgVehiculo, imgVehiculo2, latitud, longitud, maps_url, map_image, user_id, marca)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         valores = (
             datos["nombre_vehiculo"], 
@@ -67,7 +75,8 @@ class crud_auto:
             datos["longitud"],  
             datos["maps_url"], 
             datos["map_image"],  
-            datos["user_id"]
+            datos["user_id"],
+            datos["marca"]
         )
         return self.db.procesar_consultas(sql, valores)
 
@@ -96,6 +105,7 @@ class crud_auto:
         valores = (id_comentario,)
         return self.db.procesar_consultas(sql, valores)
 
+
     def consultar_vehiculos(self):
         sql = """
             SELECT pv.*, 
@@ -118,7 +128,7 @@ class crud_auto:
             ORDER BY pv.Id_Publicacion DESC
         """
         resultados = self.db.consultar(sql)
-        print(resultados)  # Para depuración
+       
         return resultados
 
     def dar_like(self, user_id, Id_Publicacion):
@@ -157,3 +167,35 @@ class crud_auto:
         valores = (user_id, Id_Publicacion)
         resultados = self.db.consultar(sql, valores)
         return resultados[0]['like_exists'] > 0 if resultados else False
+    
+    def obtener_publicaciones_favoritas(self, user_id):
+        sql = """
+        SELECT pv.*, u.NombreCompleto
+        FROM publicacion_vehiculos pv
+        JOIN likes l ON pv.Id_Publicacion = l.Id_Publicacion
+        JOIN users u ON pv.user_id = u.user_id
+        WHERE l.user_id = %s AND l.like_status = 1;
+        """
+        valores = (user_id,)
+        return self.db.consultar(sql, valores)
+    
+    def eliminar_publicacion(self, publicacion_id):
+     publicacion_id = int(publicacion_id)
+     sql = "DELETE FROM publicacion_vehiculos WHERE Id_Publicacion = %s"
+     valores = (publicacion_id,)
+     return self.db.procesar_consultas(sql, valores)
+    
+
+    def quitar_de_favoritos(self, user_id, Id_Publicacion):
+        """
+        Elimina una publicación de la lista de favoritas del usuario.
+        """
+        sql = """
+            DELETE FROM likes
+            WHERE user_id = %s AND Id_Publicacion = %s;
+        """
+        valores = (user_id, Id_Publicacion)
+        return self.db.procesar_consultas(sql, valores)
+        
+    
+    

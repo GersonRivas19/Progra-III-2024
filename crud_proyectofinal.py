@@ -15,6 +15,8 @@ class crud:
             print("Conectado")
         else:
             print("No se ha podido conectar")
+
+        
     def consultar(self, sql, valores=None):
         cursor = self.conexion.cursor(dictionary=True)
         cursor.execute(sql, valores if valores else ())
